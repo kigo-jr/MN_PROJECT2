@@ -1,0 +1,1 @@
+# TODO: Zacząć pisać projekt
