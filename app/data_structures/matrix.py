@@ -10,7 +10,7 @@ class Matrix:
         self.matrix = np.array(np.nan)
 
     def __init__(self, array: np.array) -> None:
-        self._matrix = array
+        self.matrix = array
 
 
     @property
