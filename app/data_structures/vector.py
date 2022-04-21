@@ -9,6 +9,19 @@ class vector:
     def __len__(self) -> int:
         return self.length
 
+    def __eq__(self, __o: object) -> bool:
+        if type(__o) != type(self):
+            return False
+
+        for i in range(len(self)):
+            if __o.vector[i] != self.vector[i]:
+                return False
+
+        return True
+
+    def __getitem__(self, key: int) -> float:
+        return self.vector[key]
+
     def __str__(self) -> str:
         str_representation: str = ""
         for element in self.vector:

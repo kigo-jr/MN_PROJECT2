@@ -23,12 +23,29 @@ class matrix:
             str_representation += "|\n"
         return str_representation
 
-    def __add__(self, other: "matrix") -> "matrix":
-        if  self.rows != other.rows or self.cols != other.cols:
+    def __eq__(self, __o: object) -> bool:
+        if type(__o) != type(self) or self.cols != __o.cols or self.rows != __o.rows:
+            return False
+
+        try:
+            for i in range(self.rows):
+                for j in range(self.cols):
+                    if __o.matrix[i][j] != self.matrix[i][j]:
+                        raise Exception
+        except Exception:
+            return False
+
+        return True
+
+    def __getitem__(self, key: int) -> List[float]:
+        return self.matrix[key]
+
+    def __add__(self, __o: "matrix") -> "matrix":
+        if  self.rows != __o.rows or self.cols != __o.cols:
             raise Exception("Matrices have to be of equal size in order to add them!")
 
-        addition_list: List[List[float]] = self.matrix
-        other_list: List[List[float]] = other.matrix
+        addition_list: List[List[float]] = self.copy().matrix
+        other_list: List[List[float]] = __o.copy().matrix
 
         for i in range(len(addition_list)):
             for j in range(len(addition_list[0])):
@@ -36,12 +53,12 @@ class matrix:
 
         return matrix(addition_list)
 
-    def __sub__(self, other: "matrix") -> "matrix":
-        if  self.rows != other.rows or self.cols != other.cols:
+    def __sub__(self, __o: "matrix") -> "matrix":
+        if  self.rows != __o.rows or self.cols != __o.cols:
             raise Exception("Matrices have to be of equal size in order to subtract them!")
 
-        subtraction_list: List[List[float]] = self.matrix
-        other_list: List[List[float]] = other.matrix
+        subtraction_list: List[List[float]] = self.copy().matrix
+        other_list: List[List[float]] = __o.copy().matrix
 
         for i in range(len(subtraction_list)):
             for j in range(len(subtraction_list[0])):
@@ -49,9 +66,26 @@ class matrix:
 
         return matrix(subtraction_list)
 
-    def __mul__(self, other: Union["matrix", vector]) -> Union["matrix", vector]:
+    def __mul__(self, __o: Union["matrix", vector]) -> Union["matrix", vector]:
         # TODO: implement dot product of matrices and matrix with vector
-        pass
+
+        self_copy: matrix = self.copy()
+        other_copy: Union["matrix", vector] = __o.copy()
+
+        if type(__o) == type(self):
+            # HACK: TBH it's not needed in this project!
+            pass
+        elif isinstance(__o, vector):
+            if self_copy.cols != len(__o):
+                raise Exception("Objects of not compatible sizes!")
+
+            return_vector: vector = vector([0.0 for _ in range(self_copy.rows)])
+
+            for i in range(self_copy.rows):
+                for j in range(self_copy.cols):
+                    return_vector.vector[i] += self_copy.matrix[i][j]*other_copy.vector[j]
+
+            return return_vector
 
     @property
     def matrix(self) -> List[List[float]]:
