@@ -1,9 +1,9 @@
 # Projekt z metod numerycznych - układy równań liniowych
 
-## zależności projektu:
+## Zależności projektu:
 - matplotlib
+---
 
-#
 ## Uruchamianie projektu pod linuxem
 instalowanie zależności oraz tworzenie środowiska witrualnego
 ```bash
