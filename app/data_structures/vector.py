@@ -19,25 +19,32 @@ class vector:
 
         return True
 
+    def __add__(self, __o: "vector") -> "vector":
+        if len(self) != len(__o):
+            raise Exception("Vectors have to be of equal lengths in order to add them!")
+        return vector([i + j for i, j in zip(self.vector, __o.vector)])
+
+    def __sub__(self, __o: "vector") -> "vector":
+        if len(self) != len(__o):
+            raise Exception("Vectors have to be of equal lengths in order to subtract them!")
+        return vector([i - j for i, j in zip(self.vector, __o.vector)])
+
     def __getitem__(self, key: int) -> float:
         return self.vector[key]
+
+    def __setitem__(self, key: int, item: float) -> None:
+        self.vector[key] = item
 
     def __str__(self) -> str:
         str_representation: str = ""
         for element in self.vector:
-            str_representation += f"|{element:10.4f}|\n"
+            str_representation += f"|{element:10.4e}|\n"
 
         return str_representation
 
     @property
     def norm(self) -> float:
-        norm: float = 0.0
-        for element in self.vector:
-            norm += element ** 2
-
-        norm **= 0.5
-
-        return norm
+        return sum([element ** 2 for element in self.vector]) ** 0.5
 
     @property
     def vector(self) -> List[float]:
@@ -59,3 +66,11 @@ class vector:
     def copy(self) -> "vector":
         copy_list = [element for element in self.vector]
         return vector(copy_list)
+
+    @staticmethod
+    def zeros(n: int) -> "vector":
+        return vector([0.0 for _ in range(n)])
+
+    @staticmethod
+    def ones(n: int) -> "vector":
+        return vector([1.0 for _ in range(n)])

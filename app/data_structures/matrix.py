@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Tuple, Union
 from data_structures.vector import vector
 
 
@@ -19,7 +19,7 @@ class matrix:
         for row in self.matrix:
             str_representation += "| "
             for element in row:
-                str_representation += f"{element:10.4f} "
+                str_representation += f"{element:10.4e} "
             str_representation += "|\n"
         return str_representation
 
@@ -77,7 +77,7 @@ class matrix:
             pass
         elif isinstance(__o, vector):
             if self_copy.cols != len(__o):
-                raise Exception("Objects of not compatible sizes!")
+                raise Exception(f"Objects of not compatible sizes! (vector of length {len(__o)} and matrix of {self_copy.cols} columns)")
 
             return_vector: vector = vector([0.0 for _ in range(self_copy.rows)])
 
@@ -118,6 +118,70 @@ class matrix:
     def cols(self) -> int:
         return self._cols
 
+    @staticmethod
+    def ones(n: int) -> "matrix":
+        return matrix([[1.0 if i == j else 0.0 for i in range(n)] for j in range(n)])
+
     def copy(self) -> "matrix":
         copy_list = [[element for element in row] for row in self.matrix]
         return matrix(copy_list)
+
+    def jacobi(self, b: vector, inplace: bool=False) -> Tuple[float, int, vector]:
+        if self.cols != len(b):
+            raise Exception("")
+
+        A_copy: "matrix" = self.copy() if not inplace else self
+
+        iterations: int = 0
+
+        x: vector = vector.ones(len(b))
+        tmp_x: vector = x.copy()
+
+        while True:
+            for i in range(A_copy.rows):
+                value: float = b[i]
+                # TODO: make sure it really is Jacobi's method
+                value -= sum([A_copy[i][j] * x[j] for j in range(A_copy.cols) if i != j])
+                value /= A_copy[i][i]
+                tmp_x[i] = value
+
+            x = tmp_x.copy()
+            res: vector = A_copy * x - b
+
+            iterations += 1
+
+            if res.norm < 1e-9:
+                break
+        # TODO: measure time in Jacobi's method
+        return (0.0, iterations, x)
+
+    def gauss_seidl(self, b: vector, inplace: bool=False) -> Tuple[float, int, vector]:
+        if self.cols != len(b):
+            raise Exception("")
+
+        A_copy: "matrix" = self.copy() if not inplace else self
+
+        iterations: int = 0
+
+        x: vector = vector.ones(len(b))
+
+        while True:
+            for i in range(A_copy.rows):
+                value: float = b[i]
+                # TODO: make sure it really is Gauss Seidel's method
+                value -= sum([A_copy[i][j] * x[j] for j in range(A_copy.cols) if i != j])
+                value /= A_copy[i][i]
+                x[i] = value
+
+            res: vector = A_copy * x - b
+
+            iterations += 1
+
+            if res.norm < 1e-9:
+                break
+        # TODO: measure time in Gauss Seidel's method
+        return (0.0, iterations, x)
+
+    def lu_factorization(self, b: vector, inplace: bool=False) -> Tuple[float, int, vector]:
+        # TODO: implement LU factorization
+        pass
