@@ -5,37 +5,6 @@ from time import time
 
 class matrix:
 
-    """
-    Klasa reprezentująca macierz.
-    -----------------------------
-
-    zawartość klasy:
-    - inicjalizacja na podstawie listy list reprezentującej macierz
-
-    >>> A = matrix([
-        [1.0, 0.0, 0.0],
-        [0.0, 2.0, 0.0],
-        [0.0, 0.0, 3.0]
-    ])
-
-    - podstawowe operacje arytmetyczne na macierzach (dodawanie, odejmowanie, iloczyn z wektorem)
-
-    >>> C = A - B
-    >>> C = A + B
-    >>> y = A * x
-
-    - metody rozwiązywania układów równać metodami Jacobiego, Gaussa-Seidela, faktoryzacji LU
-
-    >>> time, iterations, solution, residuum = A.jacobi(vector([1.0, 2.0, 3.0]))
-    >>> time, iterations, solution, residuum = A.gauss_seidel(vector([1.0, 2.0, 3.0]))
-    >>> time, solution, residuum = A.lu_factorization(vector([1.0, 2.0, 3.0]))
-
-    - metody generujące macierze kwadratowe jednostkowe oraz zerowe o zadanym wymiarze
-
-    >>> I = matrix.ones(7)
-    >>> Z = matrix.zeros(7)
-    """
-
     def __init__(self, array: Union[List[List[float]], None]=None) -> None:
         if array is None:
             self.matrix = [[float("nan")]]
@@ -95,13 +64,11 @@ class matrix:
         return matrix(subtraction_list)
 
     def __mul__(self, __o: Union["matrix", vector]) -> Union["matrix", vector]:
-        # TODO: implement dot product of matrices and matrix with vector
 
         self_copy: matrix = self.copy()
         other_copy: Union["matrix", vector] = __o.copy()
 
         if type(__o) == type(self):
-            # HACK: TBH it's not needed in this project!
             pass
         elif isinstance(__o, vector):
             if self_copy.cols != len(__o):
@@ -174,7 +141,6 @@ class matrix:
         while True:
             for i in range(A_copy.rows):
                 value: float = b[i]
-                # TODO: make sure it really is Jacobi's method
                 value -= sum([A_copy[i][j] * x[j] for j in range(A_copy.cols) if i != j])
                 value /= A_copy[i][i]
                 tmp_x[i] = value
@@ -184,12 +150,11 @@ class matrix:
 
             iterations += 1
 
-            if iterations > 100:
-                raise Exception("Iteration count exceeded 10 000!")
+            if iterations > 1000:
+                raise Exception("Iteration count exceeded 1 000!")
 
             if res.norm < precision:
                 break
-        # TODO: measure time in Jacobi's method
         return (time() - start_time, iterations, x, res)
 
     def gauss_seidel(self, b: vector, precision: float=1e-9, inplace: bool=False) -> Tuple[float, int, vector, vector]:
@@ -207,7 +172,6 @@ class matrix:
         while True:
             for i in range(A_copy.rows):
                 value: float = b[i]
-                # TODO: make sure it really is Gauss Seidel's method
                 value -= sum([A_copy[i][j] * x[j] for j in range(A_copy.cols) if i != j])
                 value /= A_copy[i][i]
                 x[i] = value
@@ -216,16 +180,14 @@ class matrix:
 
             iterations += 1
 
-            if iterations > 100:
-                raise Exception("Iteration count exceeded 10 000!")
+            if iterations > 1000:
+                raise Exception("Iteration count exceeded 1 000!")
 
             if res.norm < precision:
                 break
-        # TODO: measure time in Gauss Seidel's method
         return (time() - start_time, iterations, x, res)
 
     def lu_factorization(self, b: vector, inplace: bool=False) -> Tuple[float, vector, vector]:
-        # TODO: implement LU factorization
         start_time: float = time()
         A_copy: "matrix" = self.copy() if not inplace else self
         L: "matrix" = matrix.ones(A_copy.cols)

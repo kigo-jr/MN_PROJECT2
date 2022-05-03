@@ -3,11 +3,8 @@ import matplotlib.pyplot as plt
 from data_structures import vector, matrix
 from matplotlib import rc
 rc('font',**{'family':'sans-serif','sans-serif':['Helvetica']})
-## for Palatino and other serif fonts use:
-#rc('font',**{'family':'serif','serif':['Palatino']})
 rc('text', usetex=True)
 
-# TODO: a_1 = 5 + 4, N = 969, b_n = sin(n*(2+1))
 
 if __name__ == "__main__":
 
